@@ -12,9 +12,12 @@ def splitxmlfile(filepath,count,tag):
             f.write(b"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n")
             f.write(b"<root>\n")      
             for event, elem in context:
-                count -= 1
+                
                 if elem.tag == tag and count >= 0:
                     f.write(ET.tostring(elem)) 
+                    count -= 1
+                else:
+                    break
             f.write(b"</root>\n")  
     except IOError:
         type, value, traceback = sys.exc_info()
