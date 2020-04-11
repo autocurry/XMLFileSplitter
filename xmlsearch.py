@@ -27,24 +27,32 @@ def usingparse(filepath,tagname,tagvalue):
     elementtype = root
     value = 'something'
     nodes = [root.tag]
-    while(elementtype.tag != 'employee' and value == 'something'):
+    while(elementtype.tag != 'employeedata' and value == 'something'):
         child  = getchild(elementtype)
         print('childtag:',child.tag)
         nodes.append(child.tag)
         elementtype = child
 
-    context = ET.iterparse(filepath, events=('end',))
+    context = ET.iterparse(filepath, events=('start','end',))
     title = 'splittedfile'
     filename = format(title + ".xml")
     with open(filename, 'w') as f:
         f.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n")
         for node in nodes:
             f.write("<"+node+">\n")
+            flag = True
         for event, elem in context:
-            if elem.tag == 'employee':
-                f.write(ET.tostring(elem))
+            if flag is True:
+                if elem.tag == 'employee':
+                    for child in elem:
+                        if child.tag == 'id' and child.text == '99':
+                            print(ET.tostring(elem).decode("utf-8"))
+                            f.write(ET.tostring(elem).decode("utf-8"))
+                            flag = False
+                            break
             else:
                 break
+
         nodes.reverse()
         for node in nodes:
             f.write("</"+node+">\n")
