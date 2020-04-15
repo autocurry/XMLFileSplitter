@@ -53,7 +53,7 @@ splitterlabel = tk.Label(totalframe, text="Splitter Tag",fg="Black",font=('Helve
 splitterlabel.grid(column=0,row=2, padx=5,pady=5)
 
 splittertag = tk.Entry(totalframe,fg="Black",font=('Helvetica','12'),bg="white",width=5)
-splittertag.insert(END,'p')
+splittertag.insert(END,'employee')
 splittertag.grid(column=1,row=2, padx=5,pady=5)
 
 convertbutton = tk.Button(totalframe,text='Split', command=split, relief=RAISED,fg="Black",font=('Helvetica','14','bold'))

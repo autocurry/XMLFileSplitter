@@ -3,21 +3,28 @@ import sys
 import logging
 
 def splitxmlfile(filepath,count,tag):
+    syscount = count
     try:
         logging.info('Splitting in progress')
-        context = ET.iterparse(filepath, events=('end', ))
+        context = ET.iterparse(filepath, events=('start', ))
         title = 'splittedfile'
         filename = format(title + ".xml")
         with open(filename, 'wb') as f:
-            f.write(b"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n")
-            f.write(b"<root>\n")      
-            for event, elem in context:
-                if elem.tag == tag and count >= 0:
-                    f.write(ET.tostring(elem)) 
-                    count -= 1
+            f.write(b"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n")                
+            nodes =[]
+            for event, elem in context:   
+                if count > 0:             
+                    if elem.tag == tag and count >= 0:
+                        f.write(ET.tostring(elem)) 
+                        count -= 1
+                    elif syscount == count:
+                        nodes.append(elem.tag)
+                        f.write(("<"+elem.tag+">").encode())
                 else:
                     break
-            f.write(b"</root>\n")  
+            nodes.reverse()
+            for node in nodes:
+                f.write(("</"+node+">").encode())
     except IOError:
         type, value, traceback = sys.exc_info()
         logging.error('Error opening %s: %s' % (value.filename, value.strerror))   
