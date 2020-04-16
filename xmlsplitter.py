@@ -2,13 +2,12 @@ import xml.etree.ElementTree as ET
 import sys
 import logging
 
-def splitxmlfile(filepath,count,tag):
+def splitxmlfile(filepath,count,tag,outpath):
     syscount = count
     try:
         logging.info('Splitting in progress')
-        context = ET.iterparse(filepath, events=('start', ))
-        title = 'splittedfile'
-        filename = format(title + ".xml")
+        context = ET.iterparse(filepath, events=('start', ))        
+        filename = format(outpath)
         with open(filename, 'wb') as f:
             f.write(b"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n")                
             nodes =[]
