@@ -6,6 +6,7 @@ from xmlsplitter import *
 from tkinter import messagebox
 import logging
 from pathlib import Path
+from xmlremove import *
 
 logging.basicConfig(level=logging.DEBUG, filename='app.log', filemode='w', format='%(asctime)s - %(message)s')
 
@@ -50,6 +51,12 @@ def split():
         for message in messagelist:
             messages = messages + message +"\n"
         messagebox.showinfo('Warning',messages)
+
+def remove():
+    count = int(countbox.get())
+    splittag=str(splittertag.get())
+    outpath = outputflename.get()
+    xmlremovecontents(filepath,count,splittag,outpath)
     
 
 root=tk.Tk()
@@ -94,7 +101,8 @@ splittertag.grid(column=1,row=3, padx=5,pady=5,sticky = W)
 convertbutton = tk.Button(baseframe,text='Split', command=split, relief=RAISED,fg="Black",font=('Helvetica','14','bold'))
 convertbutton.place(relx=0.45,rely=0.55,relwidth=0.2,relheight=0.1,anchor='n')
 
-
+removecontents = tk.Button(baseframe,text='Remove', command=remove, relief=RAISED,fg="Black",font=('Helvetica','14','bold'))
+removecontents.place(relx=0.7,rely=0.55,relwidth=0.2,relheight=0.1,anchor='n')
 
 
 
