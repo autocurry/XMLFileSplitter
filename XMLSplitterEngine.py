@@ -17,6 +17,8 @@ validations = {
     2:'Please select splitter tag'
 }
 
+totalrecords = 0
+
 def browse():
     global filepath
     filepath = filedialog.askopenfilename(
@@ -28,6 +30,8 @@ def browse():
     browsefilename.insert(END,Path(filepath).name)
     outputflename.delete(0,END)
     outputflename.insert(END,Path(filepath).name)
+    count = elementcount(filepath,str(splittertag.get()))
+    totalcountlabel['text'] = "Total = "+str(count)
 
 def split():
     #validate
@@ -57,6 +61,7 @@ def remove():
     splittag=str(splittertag.get())
     outpath = outputflename.get()
     xmlremovecontents(filepath,count,splittag,outpath)
+    messagebox.showinfo('Warning','done')
     
 
 root=tk.Tk()
@@ -77,11 +82,14 @@ browsefilename.grid(column=1,row=0, padx=5,pady=5)
 browsebutton = tk.Button(totalframe,text='Browse', command=browse,fg="Black",font=('Helvetica','12'))
 browsebutton.grid(column=2,row=0,padx=5,pady=5)
 
-countlabel = tk.Label(totalframe, text="Count of records *",fg="Black",font=('Helvetica','12'),bg="white")
+countlabel = tk.Label(totalframe, text="Count of records (Total = "+str(totalrecords)+") *",fg="Black",font=('Helvetica','12'),bg="white")
 countlabel.grid(column=0,row=1, padx=5,pady=5,sticky = W)
 
 countbox = tk.Entry(totalframe,fg="Black",font=('Helvetica','12'),bg="white",width=5)
 countbox.grid(column=1,row=1, padx=5,pady=5,sticky = W)
+
+totalcountlabel = tk.Button(totalframe, text="Total = "+str(totalrecords),fg="Black",font=('Helvetica','12'),bg="white")
+totalcountlabel.grid(column=2,row=1, padx=5,pady=5,sticky = W)
 
 outputbrowselabel = tk.Label(totalframe, text="Please select the output filename",fg="Black",font=('Helvetica','12'),bg="white")
 outputbrowselabel.grid(column=0,row=2, padx=5,pady=5,sticky = W)

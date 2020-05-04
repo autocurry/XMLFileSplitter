@@ -12,17 +12,26 @@ def xmlremovecontents(filepath,count,tag,outpath):
         filename = format(outpath)
         copyfile(filepath, outpath)
         context = ET.iterparse(outpath, events=('start', ))            
-        for event, elem in context:   
-            if count > 0:             
-                if elem.tag == tag and count >= 0:
-                    elem.remove()
-                    count -= 1
-                elif syscount == count:
-                    pass                    
-            else:
-                break            
+        for event, elem in context:                         
+            if elem.tag == 'employee' and count >= 0:
+                    for d in elem.iterfind("id"):
+                        if count > 0:   
+                            elem.remove(d)                            
+                            count -= 1
+                        else:
+                            ET.dump(elem)
+                            break       
 
     except IOError:
         type, value, traceback = sys.exc_info()
-        logging.error('Error opening %s: %s' % (value.filename, value.strerror))   
+        logging.error('Error opening %s: %s' % (value.filename, value.strerror)) 
+
+def elementcount(filepath,tag):
+    count = 0
+    for event, elem in ET.iterparse(filepath):
+        if event == 'end':
+                if elem.tag == tag:
+                    count += 1
+                    elem.clear() # discard the element
+    return count  
         
