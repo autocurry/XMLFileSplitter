@@ -26,12 +26,5 @@ def xmlremovecontents(filepath,count,tag,outpath):
         type, value, traceback = sys.exc_info()
         logging.error('Error opening %s: %s' % (value.filename, value.strerror)) 
 
-def elementcount(filepath,tag):
-    count = 0
-    for event, elem in ET.iterparse(filepath):
-        if event == 'end':
-                if elem.tag == tag:
-                    count += 1
-                    elem.clear() # discard the element
-    return count  
+
         

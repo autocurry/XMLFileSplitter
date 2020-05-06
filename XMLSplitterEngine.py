@@ -53,7 +53,8 @@ def split():
         splittag=str(splittertag.get())
         outpath = outputflename.get()
         logging.info(f'splitting the file: {filepath} with {count} records on {splittag} tag')
-        splitxmlfile(filepath,count,splittag,outpath)
+        #splitxmlfile(filepath,count,splittag,outpath) 
+        splitxmlfilewithcounter(filepath,splittag,outpath)       
         messagebox.showinfo('Success',f"File generated in the path: {os.getcwd()}\{outputflename.get()}")
     else:
         messages = ''
