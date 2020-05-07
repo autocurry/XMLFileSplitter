@@ -40,19 +40,20 @@ def splitxmlfile(filepath,count,tag,outpath):
 
 def splitxmlfilewithcounter(filepath,tag,outpath):    
     totalcount = elementcount(filepath,tag)
-    nooffiles = int(totalcount / 100 )
-    diviser = totalcount % 100
+    iterator = 10000
+    nooffiles = int(totalcount / iterator )
+    diviser = totalcount % iterator
     if diviser > 0:
         nooffiles += 1
     init = 0
-    maximu = 100
+    maximu = iterator
     while (nooffiles>0):   
         syscount = 1
         count = 1             
         try:
             logging.info('Splitting in progress')
             context = ET.iterparse(filepath, events=('start', ))        
-            filename = str(maximu)+format(outpath)
+            filename = str(init)+"to"+str(maximu)+"_"+format(outpath)
             with open(filename, 'wb') as f:
                 f.write(b"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n")                
                 nodes =[]
@@ -65,8 +66,7 @@ def splitxmlfilewithcounter(filepath,tag,outpath):
                                 
                             else:
                                 init = maximu
-                                maximu = init+100
-                                nooffiles -= 1
+                                maximu = init+iterator                                
                                 break                    
                         count += 1
                     elif syscount == count:
@@ -76,6 +76,7 @@ def splitxmlfilewithcounter(filepath,tag,outpath):
                 nodes.reverse()
                 for node in nodes:
                     f.write(("</"+node+">").encode())
+                nooffiles -= 1
         except IOError:
             type, value, traceback = sys.exc_info()
             logging.error('Error opening %s: %s' % (value.filename, value.strerror))   
