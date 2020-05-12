@@ -79,4 +79,28 @@ def splitxmlfilewithcounter(filepath,tag,outpath):
                 nooffiles -= 1
         except IOError:
             type, value, traceback = sys.exc_info()
-            logging.error('Error opening %s: %s' % (value.filename, value.strerror))   
+            logging.error('Error opening %s: %s' % (value.filename, value.strerror))  
+
+def findandremove(filepath, parenttagname, tagname, value=277):
+    syscount = 0
+    context = ET.iterparse(filepath, events=('start', ))
+    filename = 'trimmed.xml'
+    with open(filename, 'wb') as f:
+        f.write(b"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n")                
+        nodes =[]
+        for event, elem in context:   
+            if elem.tag == parenttagname:
+                syscount += 1
+                contents = ET.tostring(elem).decode()
+                searchkey = '<'+tagname+'>'+str(value)+'</'+tagname+'>'
+                if (searchkey in contents):
+                    print(ET.tostring(elem))
+                    f.write(ET.tostring(elem))
+                    break
+            elif syscount == 0:
+                nodes.append(elem.tag)
+                f.write(("<"+elem.tag+">").encode())
+        nodes.reverse()
+        for node in nodes:
+            f.write(("</"+node+">").encode())
+    
