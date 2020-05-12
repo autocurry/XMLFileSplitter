@@ -1,6 +1,10 @@
 import xml.etree.ElementTree as ET
 import sys
 import logging
+import os
+import shutil
+
+outputpath = os.getcwd()+"\\Output"
 
 def elementcount(filepath,tag):
     count = 0
@@ -12,11 +16,16 @@ def elementcount(filepath,tag):
     return count  
 
 def splitxmlfile(filepath,count,tag,outpath):
-    syscount = count    
+    syscount = count  
+    if(not (os.path.exists(outputpath))):
+        os.mkdir(outputpath)
+    else:
+        shutil.rmtree(outputpath)
+        os.mkdir(outputpath)
     try:
         logging.info('Splitting in progress')
         context = ET.iterparse(filepath, events=('start', ))        
-        filename = format(outpath)
+        filename = outputpath+"//"+format(outpath)
         with open(filename, 'wb') as f:
             f.write(b"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n")                
             nodes =[]

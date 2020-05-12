@@ -6,14 +6,15 @@ from xmlsplitter import *
 from tkinter import messagebox
 import logging
 from pathlib import Path
-from xmlremove import *
 
 logging.basicConfig(level=logging.DEBUG, filename='app.log', filemode='w', format='%(asctime)s - %(message)s')
 
 filepath = ''
+
+
 validations = {
     0: 'Please select XML File to Split',
-    1:'Please select the count of output records required',
+    1:'Please select the count of output records',
     2:'Please select splitter tag'
 }
 
@@ -33,9 +34,13 @@ def browse():
     #count = elementcount(filepath,str(splittertag.get()))
     #totalcountlabel['text'] = "Total = "+str(count)
 
-def counting():    
+def counting():
+    checkcounter = os.path.exists(filepath)
+    if(not checkcounter):
+        messagebox.showinfo('Validation Error',"Please provide a valid file imput file")
     count = elementcount(filepath,str(splittertag.get()))
-    totalcountlabel['text'] = "Total = "+str(count)
+    totalcountvalue.delete(0,END)
+    totalcountvalue.insert(END,count)
 
 
 def split():
@@ -52,24 +57,13 @@ def split():
         count = int(countbox.get())
         splittag=str(splittertag.get())
         outpath = outputflename.get()
-        logging.info(f'splitting the file: {filepath} with {count} records on {splittag} tag')
-        #splitxmlfile(filepath,count,splittag,outpath) 
-        #splitxmlfilewithcounter(filepath,splittag,outpath)       
-        findandremove(filepath,'employee','id')
-        messagebox.showinfo('Success',f"File generated in the path: {os.getcwd()}\{outputflename.get()}")
+        splitxmlfile(filepath,count,splittag,outpath)
+        messagebox.showinfo('Success',f'File generated in the path: {os.getcwd()+"/Output"+"/"+outpath}')
     else:
         messages = ''
         for message in messagelist:
             messages = messages + message +"\n"
         messagebox.showinfo('Warning',messages)
-
-def remove():
-    count = int(countbox.get())
-    splittag=str(splittertag.get())
-    outpath = outputflename.get()
-    xmlremovecontents(filepath,count,splittag,outpath)
-    messagebox.showinfo('Warning','done')
-    
 
 root=tk.Tk()
 root.title("XML File Splitter")
@@ -89,14 +83,12 @@ browsefilename.grid(column=1,row=0, padx=5,pady=5)
 browsebutton = tk.Button(totalframe,text='Browse', command=browse,fg="Black",font=('Helvetica','12'))
 browsebutton.grid(column=2,row=0,padx=5,pady=5)
 
-countlabel = tk.Label(totalframe, text="Count of records *", fg="Black",font=('Helvetica','12'),bg="white")
+countlabel = tk.Label(totalframe, text="Count of records", fg="Black",font=('Helvetica','12'),bg="white")
 countlabel.grid(column=0,row=1, padx=5,pady=5,sticky = W)
 
 countbox = tk.Entry(totalframe,fg="Black",font=('Helvetica','12'),bg="white",width=5)
 countbox.grid(column=1,row=1, padx=5,pady=5,sticky = W)
 
-totalcountlabel = tk.Button(totalframe, text="Total = "+str(totalrecords),command=counting,fg="Black",font=('Helvetica','12'),bg="white")
-totalcountlabel.grid(column=2,row=1, padx=5,pady=5,sticky = W)
 
 outputbrowselabel = tk.Label(totalframe, text="Please select the output filename",fg="Black",font=('Helvetica','12'),bg="white")
 outputbrowselabel.grid(column=0,row=2, padx=5,pady=5,sticky = W)
@@ -111,11 +103,21 @@ splittertag = tk.Entry(totalframe,fg="Black",font=('Helvetica','12'),bg="white",
 splittertag.insert(END,'employee')
 splittertag.grid(column=1,row=3, padx=5,pady=5,sticky = W)
 
-convertbutton = tk.Button(baseframe,text='Split', command=split, relief=RAISED,fg="Black",font=('Helvetica','14','bold'))
-convertbutton.place(relx=0.45,rely=0.55,relwidth=0.2,relheight=0.1,anchor='n')
 
-removecontents = tk.Button(baseframe,text='Remove', command=remove, relief=RAISED,fg="Black",font=('Helvetica','14','bold'))
-removecontents.place(relx=0.7,rely=0.55,relwidth=0.2,relheight=0.1,anchor='n')
+totalcountbutton = tk.Button(totalframe, text="Total",command=counting,relief=RAISED,fg="Black",font=('Helvetica','14','bold'))
+totalcountbutton.grid(column=0,row=4, padx=5,pady=5,sticky = W)
+
+totalcountvalue = tk.Entry(totalframe, relief=RAISED,fg="Black",font=('Helvetica','14','bold'))
+totalcountvalue.grid(column=1,row=4, padx=5,pady=5,sticky = W)
+
+trimbutton = tk.Button(baseframe,text="Trim",command=split, relief=RAISED,fg="Black",font=('Helvetica','14','bold'))
+trimbutton.place(relx=0.25,rely=0.65,relwidth=0.2,relheight=0.1,anchor='n')
+
+removecontents = tk.Button(baseframe,text='Split', command=split, relief=RAISED,fg="Black",font=('Helvetica','14','bold'))
+removecontents.place(relx=0.5,rely=0.65,relwidth=0.2,relheight=0.1,anchor='n')
+
+searchandtrim = tk.Button(baseframe,text='Search&Trim', command=split, relief=RAISED,fg="Black",font=('Helvetica','14','bold'))
+searchandtrim.place(relx=0.75,rely=0.65,relwidth=0.2,relheight=0.1,anchor='n')
 
 
 
