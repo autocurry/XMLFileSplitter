@@ -6,6 +6,13 @@ import shutil
 
 outputpath = os.getcwd()+"\\Output"
 
+def directoryclear(filepath):
+    if(not (os.path.exists(outputpath))):
+        os.mkdir(outputpath)
+    else:
+        shutil.rmtree(outputpath)
+        os.mkdir(outputpath)
+
 def elementcount(filepath,tag):
     count = 0
     for event, elem in ET.iterparse(filepath):
@@ -16,12 +23,8 @@ def elementcount(filepath,tag):
     return count  
 
 def splitxmlfile(filepath,count,tag,outpath):
-    syscount = count  
-    if(not (os.path.exists(outputpath))):
-        os.mkdir(outputpath)
-    else:
-        shutil.rmtree(outputpath)
-        os.mkdir(outputpath)
+    syscount = count    
+    directoryclear(filepath)  
     try:
         logging.info('Splitting in progress')
         context = ET.iterparse(filepath, events=('start', ))        
@@ -48,6 +51,7 @@ def splitxmlfile(filepath,count,tag,outpath):
         logging.error('Error opening %s: %s' % (value.filename, value.strerror))   
 
 def splitxmlfilewithcounter(filepath,tag,outpath):    
+    directoryclear(filepath)
     totalcount = elementcount(filepath,tag)
     iterator = 10000
     nooffiles = int(totalcount / iterator )
@@ -62,7 +66,7 @@ def splitxmlfilewithcounter(filepath,tag,outpath):
         try:
             logging.info('Splitting in progress')
             context = ET.iterparse(filepath, events=('start', ))        
-            filename = str(init)+"to"+str(maximu)+"_"+format(outpath)
+            filename = outputpath+"//"+str(init)+"to"+str(maximu)+"_"+format(outpath)
             with open(filename, 'wb') as f:
                 f.write(b"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n")                
                 nodes =[]

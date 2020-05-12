@@ -42,8 +42,8 @@ def counting():
     totalcountvalue.delete(0,END)
     totalcountvalue.insert(END,count)
 
-
-def split():
+# trim function creates a smaller file with the number of records mentioned having the parent tag as the tag name mentioned
+def trim():
     #validate
     messagelist=[]
     if(browsefilename.get() == ''):
@@ -59,6 +59,27 @@ def split():
         outpath = outputflename.get()
         splitxmlfile(filepath,count,splittag,outpath)
         messagebox.showinfo('Success',f'File generated in the path: {os.getcwd()+"/Output"+"/"+outpath}')
+    else:
+        messages = ''
+        for message in messagelist:
+            messages = messages + message +"\n"
+        messagebox.showinfo('Warning',messages)
+
+
+# split function splits the whole xml file into child files having 10,000 records of the tag mentioned
+def split():
+    #validate
+    messagelist=[]
+    if(browsefilename.get() == ''):
+        messagelist.append(validations[0])
+    if(splittertag.get()== ''):
+        messagelist.append(validations[2])
+
+    if(len(messagelist)== 0):        
+        splittag=str(splittertag.get())
+        outpath = outputflename.get()
+        splitxmlfilewithcounter(filepath,splittag,outpath)
+        messagebox.showinfo('Success',f'Files generated in the path: {os.getcwd()+"/Output"+"/"}')
     else:
         messages = ''
         for message in messagelist:
@@ -110,7 +131,7 @@ totalcountbutton.grid(column=0,row=4, padx=5,pady=5,sticky = W)
 totalcountvalue = tk.Entry(totalframe, relief=RAISED,fg="Black",font=('Helvetica','14','bold'))
 totalcountvalue.grid(column=1,row=4, padx=5,pady=5,sticky = W)
 
-trimbutton = tk.Button(baseframe,text="Trim",command=split, relief=RAISED,fg="Black",font=('Helvetica','14','bold'))
+trimbutton = tk.Button(baseframe,text="Trim",command=trim, relief=RAISED,fg="Black",font=('Helvetica','14','bold'))
 trimbutton.place(relx=0.25,rely=0.65,relwidth=0.2,relheight=0.1,anchor='n')
 
 removecontents = tk.Button(baseframe,text='Split', command=split, relief=RAISED,fg="Black",font=('Helvetica','14','bold'))
