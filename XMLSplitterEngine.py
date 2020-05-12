@@ -86,6 +86,24 @@ def split():
             messages = messages + message +"\n"
         messagebox.showinfo('Warning',messages)
 
+def searchandtrim():    
+    messagelist=[]
+    if(browsefilename.get() == ''):
+        messagelist.append(validations[0])
+    if(splittertag.get()== ''):
+        messagelist.append(validations[2])
+
+    if(len(messagelist)== 0):        
+        splittag=str(splittertag.get())
+        outpath = outputflename.get()
+        splitxmlfilewithcounter(filepath,splittag,outpath)
+        messagebox.showinfo('Success',f'Files generated in the path: {os.getcwd()+"/Output"+"/"}')
+    else:
+        messages = ''
+        for message in messagelist:
+            messages = messages + message +"\n"
+        messagebox.showinfo('Warning',messages)
+
 root=tk.Tk()
 root.title("XML File Splitter")
 
@@ -137,7 +155,7 @@ trimbutton.place(relx=0.25,rely=0.65,relwidth=0.2,relheight=0.1,anchor='n')
 removecontents = tk.Button(baseframe,text='Split', command=split, relief=RAISED,fg="Black",font=('Helvetica','14','bold'))
 removecontents.place(relx=0.5,rely=0.65,relwidth=0.2,relheight=0.1,anchor='n')
 
-searchandtrim = tk.Button(baseframe,text='Search&Trim', command=split, relief=RAISED,fg="Black",font=('Helvetica','14','bold'))
+searchandtrim = tk.Button(baseframe,text='Search&Trim', command=searchandtrim, relief=RAISED,fg="Black",font=('Helvetica','14','bold'))
 searchandtrim.place(relx=0.75,rely=0.65,relwidth=0.2,relheight=0.1,anchor='n')
 
 
