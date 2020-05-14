@@ -88,15 +88,12 @@ def split():
 
 def searchandtrim():    
     messagelist=[]
-    if(browsefilename.get() == ''):
-        messagelist.append(validations[0])
     if(splittertag.get()== ''):
         messagelist.append(validations[2])
 
     if(len(messagelist)== 0):        
-        splittag=str(splittertag.get())
-        outpath = outputflename.get()
-        splitxmlfilewithcounter(filepath,splittag,outpath)
+        splittag=str(splittertag.get())        
+        findandremove(splittag,'id','80100')
         messagebox.showinfo('Success',f'Files generated in the path: {os.getcwd()+"/Output"+"/"}')
     else:
         messages = ''

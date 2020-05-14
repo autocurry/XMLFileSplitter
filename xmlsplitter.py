@@ -1,7 +1,7 @@
 import xml.etree.ElementTree as ET
 import sys
 import logging
-import os
+import os, fnmatch
 import shutil
 
 outputpath = os.getcwd()+"\\Output"
@@ -94,26 +94,36 @@ def splitxmlfilewithcounter(filepath,tag,outpath):
             type, value, traceback = sys.exc_info()
             logging.error('Error opening %s: %s' % (value.filename, value.strerror))  
 
-def findandremove(filepath, parenttagname, tagname, value=277):
-    syscount = 0
-    context = ET.iterparse(filepath, events=('start', ))
-    filename = 'trimmed.xml'
-    with open(filename, 'wb') as f:
-        f.write(b"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n")                
-        nodes =[]
-        for event, elem in context:   
-            if elem.tag == parenttagname:
-                syscount += 1
-                contents = ET.tostring(elem).decode()
-                searchkey = '<'+tagname+'>'+str(value)+'</'+tagname+'>'
-                if (searchkey in contents):
-                    print(ET.tostring(elem))
-                    f.write(ET.tostring(elem))
-                    break
-            elif syscount == 0:
-                nodes.append(elem.tag)
-                f.write(("<"+elem.tag+">").encode())
-        nodes.reverse()
-        for node in nodes:
-            f.write(("</"+node+">").encode())
-    
+def findandremove(parenttagname, tagname,value,filepaths = outputpath):    
+    listoffiles = os.listdir(filepaths)
+    pattern = "*.xml"
+    xmlfiles =[]
+    for entry in listoffiles:
+        if fnmatch.fnmatch(entry,pattern):
+            xmlfiles.append(entry)
+    goahead = True        
+    for xmlfile in xmlfiles:
+        if goahead:        
+            context = ET.iterparse(os.path.join(filepaths,xmlfile), events=('start', ))
+            filename = 'trimmed.xml'
+            syscount = 0
+            with open(filename, 'wb') as f:
+                f.write(b"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n")                
+                nodes =[]
+                for event, elem in context:   
+                    if elem.tag == parenttagname:
+                        syscount += 1
+                        contents = ET.tostring(elem).decode()
+                        searchkey = '<'+tagname+'>'+str(value)+'</'+tagname+'>'
+                        if (searchkey in contents):
+                            logging.info("found matching value and printing")
+                            f.write(ET.tostring(elem))
+                            goahead = False
+                            break
+                    elif syscount == 0:
+                        nodes.append(elem.tag)
+                        f.write(("<"+elem.tag+">").encode())
+                nodes.reverse()
+                for node in nodes:
+                    f.write(("</"+node+">").encode())
+        
