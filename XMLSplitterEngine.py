@@ -86,16 +86,15 @@ def split():
             messages = messages + message +"\n"
         messagebox.showinfo('Warning',messages)
 
-def searchandtrim():    
+def searchandtrim():      
     messagelist=[]
-    top = Toplevel()
-    top.
+    countlabel.grid_forget()
     if(splittertag.get()== ''):
         messagelist.append(validations[2])
 
     if(len(messagelist)== 0):        
         splittag=str(splittertag.get())        
-        findandremove(splittag,'id','80100')
+        #findandremove(splittag,'id','80100')
         messagebox.showinfo('Success',f'Files generated in the path: {os.getcwd()+"/Output"+"/"}')
     else:
         messages = ''
