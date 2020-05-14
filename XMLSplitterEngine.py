@@ -1,4 +1,5 @@
 import tkinter as tk
+from tkinter import ttk
 from tkinter import *
 from tkinter import filedialog
 import os
@@ -104,11 +105,42 @@ def searchandtrim():
 
 root=tk.Tk()
 root.title("XML File Splitter")
+myunselect = "#ffffff"
+myselected = "#CEEFF0"
+
+style = ttk.Style()
+style.theme_create( "mystyle", parent="alt", settings={
+        "TNotebook": {"configure": {"tabmargins": [4, 5, 2, 0] } },
+        "TNotebook.Tab": {
+            "configure": {"padding": [20, 20], "background": myunselect, "font" : ('Helvetica', '14', 'bold') },
+            "map":       {"background": [("selected", myselected)],
+                          "expand": [("selected", [1, 1, 1, 0])] } } } )
+
+style.theme_use("mystyle")
+
+
+
 
 baseframe = tk.Frame(root,height=400,width=700, borderwidth=5,bg='#CEEFF0')
 baseframe.pack()
 
-totalframe = tk.Frame(baseframe, bg='#FFFFFF')
+tabmenu = ttk.Notebook(baseframe)
+splittab = ttk.Frame(tabmenu, width=700, height=400)
+tabmenu.add(splittab, text = 'SPLIT')
+trimtab = ttk.Frame(tabmenu, width=300, height=200)
+tabmenu.add(trimtab, text = 'TRIM')
+searchandsplittab = ttk.Frame(tabmenu, width=300, height=200)
+tabmenu.add(searchandsplittab, text = 'Sreach&Split')
+totalcount = ttk.Frame(tabmenu, width=300, height=200)
+tabmenu.add(totalcount, text = 'Count')
+tabmenu.pack(expand=1, fill='both', padx=5, pady=5)
+
+
+
+
+
+
+totalframe = tk.Frame(splittab, bg='#FFFFFF')
 totalframe.place(relx=0.5,rely=0.1,relwidth=0.8,relheight=0.7,anchor='n')
 
 browselabel = tk.Label(totalframe, text="Please select the XML File *",fg="Black",font=('Helvetica','12'),bg="white")
@@ -147,14 +179,14 @@ totalcountbutton.grid(column=0,row=4, padx=5,pady=5,sticky = W)
 totalcountvalue = tk.Entry(totalframe, relief=RAISED,fg="Black",font=('Helvetica','14','bold'))
 totalcountvalue.grid(column=1,row=4, padx=5,pady=5,sticky = W)
 
-trimbutton = tk.Button(baseframe,text="Trim",command=trim, relief=RAISED,fg="Black",font=('Helvetica','14','bold'))
+trimbutton = tk.Button(totalframe,text="Trim",command=trim, relief=RAISED,fg="Black",font=('Helvetica','14','bold'))
 trimbutton.place(relx=0.25,rely=0.65,relwidth=0.2,relheight=0.1,anchor='n')
 
-removecontents = tk.Button(baseframe,text='Split', command=split, relief=RAISED,fg="Black",font=('Helvetica','14','bold'))
-removecontents.place(relx=0.5,rely=0.65,relwidth=0.2,relheight=0.1,anchor='n')
+#removecontents = tk.Button(baseframe,text='Split', command=split, relief=RAISED,fg="Black",font=('Helvetica','14','bold'))
+#removecontents.place(relx=0.5,rely=0.65,relwidth=0.2,relheight=0.1,anchor='n')
 
-searchandtrim = tk.Button(baseframe,text='Search&Trim', command=searchandtrim, relief=RAISED,fg="Black",font=('Helvetica','14','bold'))
-searchandtrim.place(relx=0.75,rely=0.65,relwidth=0.2,relheight=0.1,anchor='n')
+#searchandtrim = tk.Button(baseframe,text='Search&Trim', command=searchandtrim, relief=RAISED,fg="Black",font=('Helvetica','14','bold'))
+#searchandtrim.place(relx=0.75,rely=0.65,relwidth=0.2,relheight=0.1,anchor='n')
 
 
 
