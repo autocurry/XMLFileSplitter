@@ -88,6 +88,8 @@ def split():
 
 def searchandtrim():    
     messagelist=[]
+    top = Toplevel()
+    top.
     if(splittertag.get()== ''):
         messagelist.append(validations[2])
 
