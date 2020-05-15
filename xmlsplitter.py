@@ -106,7 +106,7 @@ def findandremove(parenttagname, tagname,value,filepaths = outputpath):
     for xmlfile in xmlfiles:
         if goahead:        
             context = ET.iterparse(os.path.join(filepaths,xmlfile), events=('start', ))
-            filename = 'trimmed.xml'
+            filename = filepaths+"//"+'trimmed.xml'
             syscount = 0
             with open(filename, 'wb') as f:
                 f.write(b"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n")                

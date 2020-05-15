@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
 from tkinter import *
-from tkinter import filedialog
+from tkinter import filedialog 
 import os
 from xmlsplitter import *
 from tkinter import messagebox
@@ -16,7 +16,8 @@ filepath = ''
 validations = {
     0: 'Please select XML File to Split',
     1:'Please select the count of output records',
-    2:'Please select splitter tag'
+    2:'Please select splitter tag',
+    3:'Please select the folder path'
 }
 
 totalrecords = 0
@@ -34,14 +35,7 @@ def browse():
     outputflename.insert(END,Path(filepath).name)
     #count = elementcount(filepath,str(splittertag.get()))
     #totalcountlabel['text'] = "Total = "+str(count)
-
-def counting():
-    checkcounter = os.path.exists(filepath)
-    if(not checkcounter):
-        messagebox.showinfo('Validation Error',"Please provide a valid file imput file")
-    count = elementcount(filepath,str(splittertag.get()))
-    #totalcountvalue.delete(0,END)
-    #totalcountvalue.insert(END,count)
+    
 
 # split function creates a smaller file with the number of records mentioned having the parent tag as the tag name mentioned
 def split():
@@ -68,22 +62,6 @@ def split():
 
 
 
-def searchandtrim():      
-    messagelist=[]
-    countlabel.grid_forget()
-    if(splittertag.get()== ''):
-        messagelist.append(validations[2])
-
-    if(len(messagelist)== 0):        
-        splittag=str(splittertag.get())        
-        #findandremove(splittag,'id','80100')
-        messagebox.showinfo('Success',f'Files generated in the path: {os.getcwd()+"/Output"+"/"}')
-    else:
-        messages = ''
-        for message in messagelist:
-            messages = messages + message +"\n"
-        messagebox.showinfo('Warning',messages)
-
 root=tk.Tk()
 root.title("XML File Splitter")
 myunselect = "#ffffff"
@@ -105,18 +83,18 @@ style.theme_use("mystyle")
 baseframe = tk.Frame(root,height=400,width=700, borderwidth=5,bg='#CEEFF0')
 baseframe.pack()
 
-tabmenu = ttk.Notebook(baseframe)
+tabmenu = ttk.Notebook(baseframe,height=300,width=700)
 
-splittab = ttk.Frame(tabmenu, width=700, height=400)
+splittab = ttk.Frame(tabmenu)
 tabmenu.add(splittab, text = 'SPLIT')
 
-trimtab = ttk.Frame(tabmenu, width=700, height=400)
+trimtab = ttk.Frame(tabmenu)
 tabmenu.add(trimtab, text = 'TRIM')
 
-searchandsplittab = ttk.Frame(tabmenu, width=700, height=400)
-tabmenu.add(searchandsplittab, text = 'Sreach&Split')
+searchandsplittab = ttk.Frame(tabmenu)
+tabmenu.add(searchandsplittab, text = 'Search and Split')
 
-totalcounttab = ttk.Frame(tabmenu, width=700, height=400)
+totalcounttab = ttk.Frame(tabmenu)
 tabmenu.add(totalcounttab, text = 'Total Count')
 
 tabmenu.pack(expand=1, fill='both', padx=5, pady=5)
@@ -159,7 +137,7 @@ splittertag.grid(column=1,row=3, padx=5,pady=5,sticky = W)
 
 
 trimbutton = tk.Button(splittab,text="SPLIT",command=split, relief=RAISED,fg="Black",font=('Helvetica','14','bold'))
-trimbutton.place(relx=0.3,rely=0.65,relwidth=0.2,relheight=0.1,anchor='n')
+trimbutton.place(relx=0.3,rely=0.6,relwidth=0.2,relheight=0.1,anchor='n')
 
 #Trim tab controls
 
@@ -221,7 +199,7 @@ trimiteratortag.grid(column=1,row=2, padx=5,pady=5,sticky = W)
 
 
 removecontents = tk.Button(trimtab,text='TRIM', command=trim, relief=RAISED,fg="Black",font=('Helvetica','14','bold'))
-removecontents.place(relx=0.5,rely=0.65,relwidth=0.2,relheight=0.1,anchor='n')
+removecontents.place(relx=0.3,rely=0.6,relwidth=0.2,relheight=0.1,anchor='n')
 
 
 #Total count tab controls
@@ -270,9 +248,70 @@ totalcountvalue = tk.Entry(totalcounttab, relief=RAISED,fg="Black",font=('Helvet
 totalcountvalue.grid(column=1,row=2, padx=5,pady=5,sticky = W)
 
 
+#Search and Trim control goes here
 
-#searchandtrim = tk.Button(baseframe,text='Search&Trim', command=searchandtrim, relief=RAISED,fg="Black",font=('Helvetica','14','bold'))
-#searchandtrim.place(relx=0.75,rely=0.65,relwidth=0.2,relheight=0.1,anchor='n')
+# Search and trim method checks validations and splits the file based on the search criteria
+def searchandtrim():      
+    messagelist=[]    
+    if(searchandtrimbrowsefiledirname.get()== ''):
+        messagelist.append(validations[3])
+
+    if(len(messagelist)== 0):        
+        parenttag=str(searchandtrimparenttag.get())    
+        tagname=str(searchandtrimtag.get())    
+        value=int(searchandtrimvalue.get()) 
+        filepathdir = searchandtrimbrowsefiledirname.get()  
+        findandremove(parenttag,tagname,value,filepathdir)
+        messagebox.showinfo('Success',f'Files generated in the path: {os.getcwd()+"/Output"+"/"}')
+    else:
+        messages = ''
+        for message in messagelist:
+            messages = messages + message +"\n"
+        messagebox.showinfo('Warning',messages)
+
+
+
+def selectdir():
+    searchandtrimdir = filedialog.askdirectory()
+    searchandtrimbrowsefiledirname.delete(0,END) 
+    searchandtrimbrowsefiledirname.insert(END,searchandtrimdir)
+
+
+
+searchandtrimbrowselabel = tk.Label(searchandsplittab, text="Please select the directory path*",fg="Black",font=('Helvetica','12'),bg="white")
+searchandtrimbrowselabel.grid(column=0,row=0, padx=5,pady=5,sticky = W)
+
+searchandtrimbrowsefiledirname = tk.Entry(searchandsplittab,fg="Black",font=('Helvetica','12'),bg="white",width=20)
+searchandtrimbrowsefiledirname.grid(column=1,row=0, padx=5,pady=5)
+
+searchandtrimbrowsebutton = tk.Button(searchandsplittab,text='Browse', command=selectdir,fg="Black",font=('Helvetica','12'))
+searchandtrimbrowsebutton.grid(column=2,row=0,padx=5,pady=5)
+
+searchandtrimparenttaglabel = tk.Label(searchandsplittab, text="Parent Tag",fg="Black",font=('Helvetica','12'),bg="white")
+searchandtrimparenttaglabel.grid(column=0,row=1, padx=5,pady=5,sticky = W)
+
+searchandtrimparenttag = tk.Entry(searchandsplittab,fg="Black",font=('Helvetica','12'),bg="white",width=10)
+searchandtrimparenttag.insert(END,'employee')
+searchandtrimparenttag.grid(column=1,row=1, padx=5,pady=5,sticky = W)
+
+
+searchandtrimtaglabel = tk.Label(searchandsplittab, text="Search Tag",fg="Black",font=('Helvetica','12'),bg="white")
+searchandtrimtaglabel.grid(column=0,row=2, padx=5,pady=5,sticky = W)
+
+searchandtrimtag = tk.Entry(searchandsplittab,fg="Black",font=('Helvetica','12'),bg="white",width=10)
+searchandtrimtag.insert(END,'id')
+searchandtrimtag.grid(column=1,row=2, padx=5,pady=5,sticky = W)
+
+
+searchandtrimvaluelabel = tk.Label(searchandsplittab, text="Search Value",fg="Black",font=('Helvetica','12'),bg="white")
+searchandtrimvaluelabel.grid(column=0,row=3, padx=5,pady=5,sticky = W)
+
+searchandtrimvalue = tk.Entry(searchandsplittab,fg="Black",font=('Helvetica','12'),bg="white",width=10)
+searchandtrimvalue.insert(END,'200')
+searchandtrimvalue.grid(column=1,row=3, padx=5,pady=5,sticky = W)
+
+searchandtrim = tk.Button(searchandsplittab,text='Search and Trim', command=searchandtrim, relief=RAISED,fg="Black",font=('Helvetica','14','bold'))
+searchandtrim.place(relx=0.3,rely=0.6,relwidth=0.3,relheight=0.1,anchor='n')
 
 
 
