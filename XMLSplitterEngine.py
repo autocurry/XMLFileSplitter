@@ -40,11 +40,11 @@ def counting():
     if(not checkcounter):
         messagebox.showinfo('Validation Error',"Please provide a valid file imput file")
     count = elementcount(filepath,str(splittertag.get()))
-    totalcountvalue.delete(0,END)
-    totalcountvalue.insert(END,count)
+    #totalcountvalue.delete(0,END)
+    #totalcountvalue.insert(END,count)
 
-# trim function creates a smaller file with the number of records mentioned having the parent tag as the tag name mentioned
-def trim():
+# split function creates a smaller file with the number of records mentioned having the parent tag as the tag name mentioned
+def split():
     #validate
     messagelist=[]
     if(browsefilename.get() == ''):
@@ -67,8 +67,8 @@ def trim():
         messagebox.showinfo('Warning',messages)
 
 
-# split function splits the whole xml file into child files having 10,000 records of the tag mentioned
-def split():
+# trim function splits the whole xml file into child files having 10,000 records of the tag mentioned
+def trim():
     #validate
     messagelist=[]
     if(browsefilename.get() == ''):
@@ -125,23 +125,28 @@ baseframe = tk.Frame(root,height=400,width=700, borderwidth=5,bg='#CEEFF0')
 baseframe.pack()
 
 tabmenu = ttk.Notebook(baseframe)
+
 splittab = ttk.Frame(tabmenu, width=700, height=400)
 tabmenu.add(splittab, text = 'SPLIT')
-trimtab = ttk.Frame(tabmenu, width=300, height=200)
+
+trimtab = ttk.Frame(tabmenu, width=700, height=400)
 tabmenu.add(trimtab, text = 'TRIM')
-searchandsplittab = ttk.Frame(tabmenu, width=300, height=200)
+
+searchandsplittab = ttk.Frame(tabmenu, width=700, height=400)
 tabmenu.add(searchandsplittab, text = 'Sreach&Split')
-totalcount = ttk.Frame(tabmenu, width=300, height=200)
-tabmenu.add(totalcount, text = 'Count')
+
+totalcounttab = ttk.Frame(tabmenu, width=700, height=400)
+tabmenu.add(totalcounttab, text = 'Total Count')
+
 tabmenu.pack(expand=1, fill='both', padx=5, pady=5)
 
 
 
 
 
-
+#SplitTab controls 
 totalframe = tk.Frame(splittab, bg='#FFFFFF')
-totalframe.place(relx=0.5,rely=0.1,relwidth=0.8,relheight=0.7,anchor='n')
+totalframe.place(relx=0.5,rely=0.1,relwidth=0.9,relheight=0.7,anchor='n')
 
 browselabel = tk.Label(totalframe, text="Please select the XML File *",fg="Black",font=('Helvetica','12'),bg="white")
 browselabel.grid(column=0,row=0, padx=5,pady=5,sticky = W)
@@ -156,6 +161,7 @@ countlabel = tk.Label(totalframe, text="Count of records", fg="Black",font=('Hel
 countlabel.grid(column=0,row=1, padx=5,pady=5,sticky = W)
 
 countbox = tk.Entry(totalframe,fg="Black",font=('Helvetica','12'),bg="white",width=5)
+countbox.insert(END,'5')
 countbox.grid(column=1,row=1, padx=5,pady=5,sticky = W)
 
 
@@ -173,14 +179,28 @@ splittertag.insert(END,'employee')
 splittertag.grid(column=1,row=3, padx=5,pady=5,sticky = W)
 
 
-totalcountbutton = tk.Button(totalframe, text="Total",command=counting,relief=RAISED,fg="Black",font=('Helvetica','14','bold'))
-totalcountbutton.grid(column=0,row=4, padx=5,pady=5,sticky = W)
+trimbutton = tk.Button(totalframe,text="SPLIT",command=split, relief=RAISED,fg="Black",font=('Helvetica','14','bold'))
+trimbutton.place(relx=0.3,rely=0.65,relwidth=0.2,relheight=0.1,anchor='n')
 
-totalcountvalue = tk.Entry(totalframe, relief=RAISED,fg="Black",font=('Helvetica','14','bold'))
-totalcountvalue.grid(column=1,row=4, padx=5,pady=5,sticky = W)
 
-trimbutton = tk.Button(totalframe,text="Trim",command=trim, relief=RAISED,fg="Black",font=('Helvetica','14','bold'))
-trimbutton.place(relx=0.25,rely=0.65,relwidth=0.2,relheight=0.1,anchor='n')
+#Total count tab controls
+
+totalbrowselabel = tk.Label(totalcounttab, text="Please select the XML File *",fg="Black",font=('Helvetica','12'),bg="white")
+totalbrowselabel.grid(column=0,row=0, padx=5,pady=5,sticky = W)
+
+totalbrowsefilename = tk.Entry(totalcounttab,fg="Black",font=('Helvetica','12'),bg="white",width=20)
+totalbrowsefilename.grid(column=1,row=0, padx=5,pady=5)
+
+totalbrowsebutton = tk.Button(totalcounttab,text='Browse', command=browse,fg="Black",font=('Helvetica','12'))
+totalbrowsebutton.grid(column=2,row=0,padx=5,pady=5)
+
+
+totalcountbutton = tk.Button(totalcounttab, text="Total",command=counting,relief=RAISED,fg="Black",font=('Helvetica','14','bold'))
+totalcountbutton.grid(column=0,row=1, padx=5,pady=5,sticky = W)
+
+totalcountvalue = tk.Entry(totalcounttab, relief=RAISED,fg="Black",font=('Helvetica','14','bold'))
+totalcountvalue.grid(column=1,row=1, padx=5,pady=5,sticky = W)
+
 
 #removecontents = tk.Button(baseframe,text='Split', command=split, relief=RAISED,fg="Black",font=('Helvetica','14','bold'))
 #removecontents.place(relx=0.5,rely=0.65,relwidth=0.2,relheight=0.1,anchor='n')
