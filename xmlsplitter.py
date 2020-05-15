@@ -3,10 +3,11 @@ import sys
 import logging
 import os, fnmatch
 import shutil
+from pathlib import Path
 
 outputpath = os.getcwd()+"\\Output"
 
-def directoryclear(filepath):
+def directoryclear():
     if(not (os.path.exists(outputpath))):
         os.mkdir(outputpath)
     else:
@@ -24,7 +25,7 @@ def elementcount(filepath,tag):
 
 def splitxmlfile(filepath,count,tag,outpath):
     syscount = count    
-    directoryclear(filepath)  
+    directoryclear()  
     try:
         logging.info('Splitting in progress')
         context = ET.iterparse(filepath, events=('start', ))        
@@ -50,10 +51,10 @@ def splitxmlfile(filepath,count,tag,outpath):
         type, value, traceback = sys.exc_info()
         logging.error('Error opening %s: %s' % (value.filename, value.strerror))   
 
-def splitxmlfilewithcounter(filepath,tag,outpath):    
-    directoryclear(filepath)
+def splitxmlfilewithcounter(filepath,tag,terator):    
+    directoryclear()
     totalcount = elementcount(filepath,tag)
-    iterator = 10000
+    iterator = int(terator) 
     nooffiles = int(totalcount / iterator )
     diviser = totalcount % iterator
     if diviser > 0:
@@ -66,7 +67,7 @@ def splitxmlfilewithcounter(filepath,tag,outpath):
         try:
             logging.info('Splitting in progress')
             context = ET.iterparse(filepath, events=('start', ))        
-            filename = outputpath+"//"+str(init)+"to"+str(maximu)+"_"+format(outpath)
+            filename = outputpath+"//"+str(init)+"to"+str(maximu)+"_"+format(Path(filepath).name)
             with open(filename, 'wb') as f:
                 f.write(b"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n")                
                 nodes =[]
@@ -105,7 +106,7 @@ def findandremove(parenttagname, tagname,value,filepaths = outputpath):
     for xmlfile in xmlfiles:
         if goahead:        
             context = ET.iterparse(os.path.join(filepaths,xmlfile), events=('start', ))
-            filename = 'trimmed.xml'
+            filename = filepaths+"//"+'trimmed.xml'
             syscount = 0
             with open(filename, 'wb') as f:
                 f.write(b"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n")                
